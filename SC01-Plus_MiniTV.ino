@@ -61,7 +61,7 @@ static bool BacklightChange = true;
 // pixel drawing callback
 static int drawMCU(JPEGDRAW *pDraw) {
   unsigned long s = millis();
-  if (tft.getStartCount() > 0) {
+  if (tft.getStartCount() == 0) {
     tft.startWrite();
   }
   tft.pushImageDMA(pDraw->x, pDraw->y, pDraw->iWidth, pDraw->iHeight, (lgfx::rgb565_t *)pDraw->pPixels);
