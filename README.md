@@ -2,6 +2,12 @@
 
 https://github.com/moononournation/MiniTV
 
+https://youtu.be/2TOVohmUqOE?si=TeJfgpuY36PCbGmO
+
+# 视频演示
+
+https://youtu.be/Y63FC2zGdZ8?si=6SZcHhU8UXoEGSb4
+
 # ffmpeg转换代码
 
 ```
