@@ -1,3 +1,6 @@
+#pragma GCC push_options
+#pragma GCC optimize ("O3")
+
 /***
  * Required libraries:
  * https://github.com/lovyan03/LovyanGFX.git
