@@ -13,14 +13,14 @@ import gzip
 
 from .image_utils import resize_cover
 
-
+# 提取音频
 def extract_audio(video_file, sample_rate=16000):
-    # create a named temporary file to store the audio
+    # 创建一个命名的临时文件来存储音频
     with tempfile.NamedTemporaryFile(suffix=".wav") as f:
-        # check that ffmpeg exists
+        # 检查 ffmpeg 是否存在
         if not shutil.which("ffmpeg"):
             raise Exception("ffmpeg not installed!")
-        # convert the video file to wav format
+        # 将视频文件转换为wav格式
         status = subprocess.call(
             ["ffmpeg", "-i", video_file, "-q:a", "0", "-map", "a", f.name, "-y"],
             stdout=subprocess.DEVNULL,
@@ -28,45 +28,45 @@ def extract_audio(video_file, sample_rate=16000):
         )
         if status != 0:
             raise Exception("ffmpeg returned a non-zero status: {}".format(status))
-        # Read the audio file
+        # 读取音频文件
         audio_data, sample_rate = sf.read(f.name)
-        # Check if the audio is stereo
+        # 检查音频是否为立体声
         if len(audio_data.shape) == 2 and audio_data.shape[1] == 2:
-            # Convert to mono by averaging the two channels
+            # 通过平均两个通道转换为单声道
             audio_data = np.mean(audio_data, axis=1)
-        # Resample to 16kHz
+        # 重新采样至 16kHz
         resampled_audio = resample(
             audio_data, int(len(audio_data) * 16000 / sample_rate)
         )
-        # normalize the audio
+        # 标准化音频
         resampled_audio = resampled_audio / np.max(np.abs(resampled_audio))
-        # Convert to signed 8-bit
+        # 转换为有符号 8 位
         audio_8bit = np.int8(resampled_audio * 127)
-        # Create audio buffer
+        # 创建音频缓冲区
         audio_buffer = audio_8bit.tobytes()
-        # we've now got 16KHz 8-bit mono audio in a buffer
+        # 我们现在在缓冲区中有 16KHz 8 位单声道音频
         return audio_buffer
 
-
+# 提取视频帧
 def extract_video_frames(video_file, target_size, frame_rate=15):
     video_jpegs = []
     cap = cv2.VideoCapture(video_file)
-    # get the total number of frames
+    # 获取总帧数
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     frame_interval = 1000 / frame_rate
-    # make sure we get the first frame
+    # 确保我们得到第一帧
     last_frame_time = -frame_interval
     with tqdm(total=total_frames, desc=video_file) as progress:
         while cap.isOpened():
             frame_exists, frame = cap.read()
             if frame_exists:
-                # we don't need more than the framerate
+                # 我们只需要帧率
                 frame_ms = int(cap.get(cv2.CAP_PROP_POS_MSEC))
                 if frame_ms - last_frame_time >= frame_interval:
                     last_frame_time = frame_ms
-                    # resize the frame to fix in our target size
+                    # 调整框架大小以固定我们的目标尺寸
                     frame = resize_cover(frame, target_size)
-                    # low quality to save space and bandwidth
+                    # 低质量以节省空间和带宽
                     encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 50]
                     _, buffer = cv2.imencode(".jpg", frame, encode_param)
                     video_jpegs.append((frame_ms, buffer.tobytes()))
@@ -76,12 +76,12 @@ def extract_video_frames(video_file, target_size, frame_rate=15):
     cap.release()
     return video_jpegs
 
-
+# 获取视频哈希值
 def get_video_hash(video_file):
     hash = hashlib.sha256(video_file.encode("utf-8")).hexdigest()
     return hash
 
-
+# 获取视频数据
 def get_video_data(video_file):
     hash = get_video_hash(video_file)
     cache_file_name = f"cache/{hash}.pkl.gz"
@@ -91,19 +91,19 @@ def get_video_data(video_file):
         frames = data["frames"]
         return audio, frames
 
-
+# 处理视频文件
 def process_video_file(
-    video_path, video_file, target_size=(280, 240), sample_rate=16000, frame_rate=15
+    video_path, video_file, target_size=(480, 320), sample_rate=16000, frame_rate=20
 ):
     hash = get_video_hash(video_file)
     cache_file_name = f"cache/{hash}.pkl.gz"
-    # check if we've already processed this video
+    # 检查我们是否已经处理了该视频
     if not os.path.exists(cache_file_name):
-        # extract the audio and video frames
+        # 提取音频和视频帧
         full_path = os.path.join(video_path, video_file)
         audio = extract_audio(full_path)
         frames = extract_video_frames(full_path, target_size, frame_rate)
-        # save the audio and frames to the cache
+        # 将音频和帧保存到缓存
         with gzip.open(cache_file_name, "wb") as f:
             pickle.dump({"audio": audio, "frames": frames}, f)
     else:
@@ -114,19 +114,19 @@ VALID_MOVIE_EXTENSTIONS = [".mp4", ".avi", ".mkv", ".mov", ".wmv", ".flv", ".web
 def is_movie_file(file):
     return os.path.splitext(file)[1] in VALID_MOVIE_EXTENSTIONS
 
-
+# 处理视频
 def process_videos(
     video_path, target_size=(280, 240), sample_rate=16000, frame_rate=15
 ):
-    # create the cache directory
+    # 创建缓存目录
     os.makedirs("cache", exist_ok=True)
-    # get the list of files in the video path
+    # 获取视频路径下的文件列表
     files = os.listdir(video_path)
-    # filter out non-video files
+    # 过滤掉非视频文件
     files = [f for f in files if is_movie_file(f)]
-    # fort the files alphabetically
+    # 按字母顺序排列文件
     files.sort()
-    # process each video file
+    # 处理每个视频文件
     video_data = []
     for file in tqdm(files, desc="Processing videos"):
         audio, frames = process_video_file(

@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 FRAME_SIZE = (480, 320)
 
-# process the video files
+# 处理视频文件
 video_data = process_videos("movies", FRAME_SIZE)
 
 @app.route('/channel_info')
@@ -22,7 +22,7 @@ def get_audio(channel_index, start, length):
     if start > end:
         start = end
     if start == end:
-        # return nothing - we've got no more data to give
+        # 不返回任何内容 - 我们没有更多数据可提供
         return Response(b'', mimetype='audio/x-raw')
     slice = audio[start:end]
     return Response(slice, mimetype='audio/x-raw')
@@ -30,7 +30,7 @@ def get_audio(channel_index, start, length):
 @app.route('/frame/<int:channel_index>/<int:ms>')
 def get_frame(channel_index, ms):
     audio, frames = video_data[channel_index % len(video_data)]
-    # use binary search to find the closest frame
+    # 使用二分搜索找到最接近的帧
     start = 0
     end = len(frames) - 1
     while start <= end:
@@ -41,7 +41,7 @@ def get_frame(channel_index, ms):
             start = mid + 1
         else:
             end = mid - 1
-    # we may not find the exact frame, so return the closest frame
+    # 我们可能找不到确切的帧，因此返回最接近的帧
     if end < 0:
         end = 0
     elif start >= len(frames):
