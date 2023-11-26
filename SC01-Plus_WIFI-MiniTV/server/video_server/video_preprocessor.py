@@ -48,7 +48,7 @@ def extract_audio(video_file, sample_rate=16000):
         return audio_buffer
 
 # 提取视频帧
-def extract_video_frames(video_file, target_size, frame_rate=20):
+def extract_video_frames(video_file, target_size, frame_rate=24):
     video_jpegs = []
     cap = cv2.VideoCapture(video_file)
     # 获取总帧数
@@ -93,7 +93,7 @@ def get_video_data(video_file):
 
 # 处理视频文件
 def process_video_file(
-    video_path, video_file, target_size=(480, 320), sample_rate=16000, frame_rate=20
+    video_path, video_file, target_size=(480, 320), sample_rate=16000, frame_rate=24
 ):
     hash = get_video_hash(video_file)
     cache_file_name = f"cache/{hash}.pkl.gz"
@@ -116,7 +116,7 @@ def is_movie_file(file):
 
 # 处理视频
 def process_videos(
-    video_path, target_size=(480, 320), sample_rate=16000, frame_rate=20
+    video_path, target_size=(480, 320), sample_rate=16000, frame_rate=24
 ):
     # 创建缓存目录
     os.makedirs("cache", exist_ok=True)
