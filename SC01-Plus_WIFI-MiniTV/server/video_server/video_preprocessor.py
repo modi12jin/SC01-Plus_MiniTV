@@ -116,7 +116,7 @@ def is_movie_file(file):
 
 # 处理视频
 def process_videos(
-    video_path, target_size=(280, 240), sample_rate=16000, frame_rate=15
+    video_path, target_size=(480, 320), sample_rate=16000, frame_rate=20
 ):
     # 创建缓存目录
     os.makedirs("cache", exist_ok=True)
