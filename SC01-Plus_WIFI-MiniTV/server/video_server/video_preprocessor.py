@@ -48,7 +48,7 @@ def extract_audio(video_file, sample_rate=16000):
         return audio_buffer
 
 # 提取视频帧
-def extract_video_frames(video_file, target_size, frame_rate=15):
+def extract_video_frames(video_file, target_size, frame_rate=20):
     video_jpegs = []
     cap = cv2.VideoCapture(video_file)
     # 获取总帧数
