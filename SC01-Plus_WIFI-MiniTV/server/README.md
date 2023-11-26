@@ -1,36 +1,35 @@
-# Setup
+# 设置
 
-Make sure you have python3 installed.
+> 确保您已安装 python3。
+>
+> 然后创建虚拟环境：
 
-Then create a virtual environment:
-
-```bash
+```
 python3 -m venv venv
 ```
 
-Activate the virtual environment:
+> 激活虚拟环境：
 
-```bash
+```
 source venv/bin/activate
 ```
 
-Install the requirements:
+> 安装要求：
 
-```bash
+```
 pip install -r requirements.txt
 ```
 
-# Adding Vidoes
+# 添加视频
 
-Place videos in the `movies` directory. The videos should be in the mp4 format and should be fairly short (around 2-3 minutes maximum).
+将视频放在“movies”目录中。 视频应为 mp4 格式，并且应相当短（最多大约 2-3 分钟）。
+如果您更改视频的任何参数（例如帧大小），只需删除“cache”目录，它就会在您启动服务器时重新生成。
 
-If you change any parameters for the video (e.g. the frame size), just detele the `cache` directory and it will be regenerated when you start the server.
+# 运行
 
-# Running
+> 运行应用程序：
 
-To run the application:
-
-```bash
+```
 source venv/bin/activate
 python3 app.py
 ```
