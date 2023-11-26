@@ -8,11 +8,13 @@ FRAME_SIZE = (480, 320)
 # 处理视频文件
 video_data = process_videos("movies", FRAME_SIZE)
 
+# 频道信息
 @app.route('/channel_info')
 def get_channel_lengths():
     lengths = [len(audio) for audio, frames in video_data]
     return jsonify(lengths)
 
+# 音频频道索引
 @app.route('/audio/<int:channel_index>/<int:start>/<int:length>')
 def get_audio(channel_index, start, length):
     audio, frames = video_data[channel_index % len(video_data)]
@@ -27,6 +29,7 @@ def get_audio(channel_index, start, length):
     slice = audio[start:end]
     return Response(slice, mimetype='audio/x-raw')
 
+# 图像频道索引
 @app.route('/frame/<int:channel_index>/<int:ms>')
 def get_frame(channel_index, ms):
     audio, frames = video_data[channel_index % len(video_data)]
