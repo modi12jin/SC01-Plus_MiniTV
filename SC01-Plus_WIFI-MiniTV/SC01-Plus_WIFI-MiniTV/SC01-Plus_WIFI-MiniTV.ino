@@ -17,15 +17,15 @@
 
 const char *WIFI_SSID = "MERCURY_2FF2";
 const char *WIFI_PASSWORD = "1234567890";
-const char *FRAME_URL = "http://192.168.0.107:8123/frame";
-const char *AUDIO_URL = "http://192.168.0.107:8123/audio";
-const char *CHANNEL_INFO_URL = "http://192.168.0.107:8123/channel_info";
+const char *FRAME_URL = "http://192.168.0.107:8123/frame";//图像网址
+const char *AUDIO_URL = "http://192.168.0.107:8123/audio";//音频网址
+const char *CHANNEL_INFO_URL = "http://192.168.0.107:8123/channel_info";//频道信息网址
 
-VideoSource *videoSource = NULL;
-AudioSource *audioSource = NULL;
-VideoPlayer *videoPlayer = NULL;
-AudioOutput *audioOutput = NULL;
-ChannelData *channelData = NULL;
+VideoSource *videoSource = NULL;//视频源
+AudioSource *audioSource = NULL;//音频源
+VideoPlayer *videoPlayer = NULL;//视频播放器
+AudioOutput *audioOutput = NULL;//音频输出
+ChannelData *channelData = NULL;//通道数据
 LGFX tft;
 
 #define I2S_DOUT 37
