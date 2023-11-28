@@ -9,11 +9,14 @@
 class AudioOutput
 {
 private:
-  template<class SampleT> void write(SampleT *samples, int count, int shift=0);
+  template <class SampleT>
+  void write(SampleT *samples, int count, int shift = 0);
+
 protected:
   i2s_port_t m_i2s_port = I2S_NUM_0;
   int16_t *m_tmp_frames = NULL;
   int mVolume = 10;
+
 public:
   AudioOutput(i2s_port_t i2s_port);
   virtual void start(uint32_t sample_rate) = 0;
@@ -26,21 +29,33 @@ public:
   void write(int8_t *samples, int count);
   void write(int16_t *samples, int count);
 
-  void setVolume(int volume){
-    if (volume > 10 || volume < 0) mVolume = 10;
-    else mVolume = volume;
+  void setVolume(int volume)
+  {
+    if (volume > 10 || volume < 0)
+    {
+      mVolume = 10;
+    }
+    else
+    {
+      mVolume = volume;
+    }
   }
 
-  void volumeUp() {
-    if (mVolume == 10) {
-      return;
-    }
+  void volumeUp()
+  {
     mVolume++;
-  }
-  void volumeDown() {
-    if (mVolume == 0) {
-      return;
+    if (mVolume > 10)
+    {
+      mVolume = 10;
     }
+  }
+
+  void volumeDown()
+  {
     mVolume--;
+    if (mVolume < 0)
+    {
+      mVolume = 0;
+    }
   }
 };
