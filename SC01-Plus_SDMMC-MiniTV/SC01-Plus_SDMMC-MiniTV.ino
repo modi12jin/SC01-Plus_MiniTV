@@ -1,5 +1,5 @@
 #pragma GCC push_options
-#pragma GCC optimize ("O3")
+#pragma GCC optimize("O3")
 
 /***
  * Required libraries:
@@ -7,11 +7,11 @@
  * https://github.com/pschatzmann/arduino-libhelix.git
  * https://github.com/bitbank2/JPEGDEC.git
  */
-#define FPS 20
-#define MJPEG_BUFFER_SIZE (480 * 270 * 2 / 10) //MJPEG缓冲区大小
-#define AUDIOASSIGNCORE 1  //音频分配核心
-#define DECODEASSIGNCORE 1 //解码分配核心
-#define DRAWASSIGNCORE 0 //绘图分配核心
+#define FPS 30
+#define MJPEG_BUFFER_SIZE (480 * 270 * 2 / 10)  //MJPEG缓冲区大小
+#define AUDIOASSIGNCORE 1                       //音频分配核心
+#define DECODEASSIGNCORE 1                      //解码分配核心
+#define DRAWASSIGNCORE 0                        //绘图分配核心
 
 #include <WiFi.h>
 #include <FS.h>
@@ -21,10 +21,10 @@
 Preferences preferences;
 #define APP_NAME "video_player"
 #define K_VIDEO_INDEX "video_index"
-#define BASE_PATH "/Videos/" //基本路径
-#define AAC_FILENAME "/44100.aac" //AAC文件名
-#define MJPEG_FILENAME "/480_20fps.mjpeg" //MJPEG文件名
-#define VIDEO_COUNT 20 //视频数量
+#define BASE_PATH "/Videos/"               //基本路径
+#define AAC_FILENAME "/44100.aac"          //AAC文件名
+#define MJPEG_FILENAME "/480_30fps.mjpeg"  //MJPEG文件名
+#define VIDEO_COUNT 20                     //视频数量
 
 #define SD_CS 41
 #define SDMMC_CMD 40
@@ -52,7 +52,6 @@ LGFX tft;
 
 /* Touch */
 #include "FT6336U.h"
-FT6336U touch(I2C_SDA, I2C_SCL, TP_RST, TP_INT);
 
 /* Variables */
 static int next_frame = 0;
@@ -86,13 +85,14 @@ void setup() {
   tft.initDMA();
   tft.fillScreen(TFT_BLACK);
 
-  xTaskCreate(
+  xTaskCreatePinnedToCore(
     touchTask,
     "touchTask",
     2000,
     NULL,
     1,
-    NULL);
+    NULL,
+    1);
 
   Serial.println("Init I2S");
 
@@ -103,7 +103,7 @@ void setup() {
     return;
   }
   i2s_zero_dma_buffer(I2S_NUM_0);
-  setVolume(0.1);
+  setVolume(0.5);
 
   Serial.println("Init FS");
 
@@ -134,6 +134,7 @@ void loop() {
 }
 
 void touchTask(void *parameter) {
+  FT6336U touch(I2C_SDA, I2C_SCL, TP_RST, TP_INT);
   touch.begin();
   bool state;
   uint8_t gesture;
@@ -219,7 +220,7 @@ void playVideoWithAudio(int channel) {
     total_read_video_ms += millis() - curr_ms;
     curr_ms = millis();
 
-    if (millis() < next_frame_ms)  // check show frame or skip frame
+    if (millis() < next_frame_ms)  // 检查显示帧或跳帧
     {
       // Play video
       mjpeg_draw_frame();
