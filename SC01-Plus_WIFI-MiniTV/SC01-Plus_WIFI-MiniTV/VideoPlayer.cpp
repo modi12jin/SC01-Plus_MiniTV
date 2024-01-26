@@ -38,7 +38,7 @@ void VideoPlayer::start()
       1,
       NULL,
       1);
-  xTaskCreatePinnedToCore(_audioPlayerTask, "audio_loop", 10000, this, 1, NULL, 1);
+  xTaskCreatePinnedToCore(_audioPlayerTask, "audio_loop", 10000, this, 1, NULL, 0);
 }
 
 void VideoPlayer::setChannel(int channel)
@@ -108,7 +108,7 @@ int _doDraw(JPEGDRAW *pDraw)
   memcpy(dmaBuffer[dmaBufferIndex], pDraw->pPixels, numPixels * 2);
   LovyanGFX *tft = player->mDisplay;
   tft->waitDMA();
-  tft->setAddrWindow(pDraw->x, pDraw->y, pDraw->iWidth, pDraw->iHeight);
+  tft->setAddrWindow(pDraw->x, pDraw->y+24, pDraw->iWidth, pDraw->iHeight);
   tft->pushPixelsDMA(dmaBuffer[dmaBufferIndex], numPixels);
   dmaBufferIndex = (dmaBufferIndex + 1) % 2;
   return 1;

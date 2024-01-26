@@ -96,9 +96,9 @@ NetworkVideoSource::NetworkVideoSource(NetworkChannelData *channelData) : mChann
 }
 
 void NetworkVideoSource::start() {
-  // create a mutex to control access to the JPEG buffer
+  // 创建互斥锁来控制对 JPEG 缓冲区的访问
   mCurrentFrameMutex = xSemaphoreCreateMutex();
-  // launch the frame downloader task
+  // 启动帧下载器任务
   xTaskCreatePinnedToCore(
       _frameDownloaderTask,
       "Frame Downloader",

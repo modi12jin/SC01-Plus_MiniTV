@@ -41,8 +41,6 @@ public:
 
       // ※ 以下の設定値はパネル毎に一般的な初期値が設定さ BUSYが接続されているピン番号 (-1 = disable)れていますので、不明な項目はコメントアウトして試してみてください。
 
-      cfg.memory_width = 320;    // ドライバICがサポートしている最大の幅
-      cfg.memory_height = 480;   // ドライバICがサポートしている最大の高さ
       cfg.panel_width = 320;     // 実際に表示可能な幅
       cfg.panel_height = 480;    // 実際に表示可能な高さ
       cfg.offset_x = 0;          // パネルのX方向オフセット量

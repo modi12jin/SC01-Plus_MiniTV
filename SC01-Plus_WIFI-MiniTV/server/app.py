@@ -3,7 +3,7 @@ from video_server.video_preprocessor import process_videos, get_video_data
 
 app = Flask(__name__)
 
-FRAME_SIZE = (480, 320)
+FRAME_SIZE = (480, 270)
 
 # 处理视频文件
 video_data = process_videos("movies", FRAME_SIZE)

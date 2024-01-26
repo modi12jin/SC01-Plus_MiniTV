@@ -32,7 +32,7 @@ int channel = 0;              // 视频通道
 bool BacklightChange = true;  //背光变化
 bool state;
 uint8_t gesture;
-#define VIDEO_COUNT 3 //视频数量
+#define VIDEO_COUNT 2 //视频数量
 
 #define I2S_DOUT 37
 #define I2S_BCLK 36
